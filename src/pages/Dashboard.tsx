@@ -23,22 +23,22 @@ export const Dashboard = ({ weatherData, loading, error }: DashboardProps) => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-      <div className="container mx-auto px-4 py-8">
-        <header className="text-center mb-12">
-          <div className="flex items-center justify-center gap-3 mb-8">
-            <CloudSun size={48} className="text-blue-400" />
-            <h1 className="text-5xl font-bold text-white">Weather App</h1>
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
+        <header className="text-center mb-8 sm:mb-12">
+          <div className="flex items-center justify-center gap-2 sm:gap-3 mb-6 sm:mb-8">
+            <CloudSun size={36} className="text-blue-400 sm:w-12 sm:h-12" />
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white">Weather App</h1>
           </div>
 
-          <div className="max-w-2xl mx-auto flex gap-3">
+          <div className="max-w-2xl mx-auto flex flex-col sm:flex-row gap-3">
             <input
               type="text"
               placeholder="Enter a city"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="flex-1 px-6 py-3 bg-slate-800 text-white rounded-lg border-2 border-slate-700 focus:border-blue-500 focus:outline-none transition-colors placeholder:text-slate-500"
+              className="flex-1 px-4 sm:px-6 py-3 bg-slate-800 text-white rounded-lg border-2 border-slate-700 focus:border-blue-500 focus:outline-none transition-colors placeholder:text-slate-500 text-sm sm:text-base"
             />
-            <button className="px-8 py-3 bg-gradient-to-r from-violet-600 to-violet-700 text-white font-semibold rounded-lg hover:from-violet-700 hover:to-violet-800 transition-all shadow-lg">
+            <button className="px-6 sm:px-8 py-3 bg-gradient-to-r from-violet-600 to-violet-700 text-white font-semibold rounded-lg hover:from-violet-700 hover:to-violet-800 transition-all shadow-lg whitespace-nowrap">
               Add City
             </button>
           </div>
@@ -60,7 +60,7 @@ export const Dashboard = ({ weatherData, loading, error }: DashboardProps) => {
         )}
 
         {!loading && !error && filteredWeather.length > 0 && (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 max-w-7xl mx-auto">
             {filteredWeather.map((weather) => (
               <DashboardWeatherCard
                 key={weather.id}
@@ -72,13 +72,13 @@ export const Dashboard = ({ weatherData, loading, error }: DashboardProps) => {
         )}
 
         {!loading && !error && filteredWeather.length === 0 && weatherData.length > 0 && (
-          <div className="text-center py-12">
-            <p className="text-slate-400 text-xl">No cities found matching "{searchQuery}"</p>
+          <div className="text-center py-8 sm:py-12 px-4">
+            <p className="text-slate-400 text-lg sm:text-xl">No cities found matching "{searchQuery}"</p>
           </div>
         )}
 
-        <footer className="text-center mt-16 pb-8">
-          <p className="text-slate-500 text-sm">2021 Fidenz Technologies</p>
+        <footer className="text-center mt-12 sm:mt-16 pb-6 sm:pb-8">
+          <p className="text-slate-500 text-xs sm:text-sm">2021 Fidenz Technologies</p>
         </footer>
       </div>
     </div>
@@ -108,7 +108,7 @@ const DashboardWeatherCard = ({ weather, onClick }: DashboardWeatherCardProps) =
   return (
     <div
       onClick={onClick}
-      className="weather-card bg-slate-800 rounded-xl overflow-hidden shadow-2xl transform transition-all duration-300 hover:scale-105 hover:shadow-3xl cursor-pointer relative"
+      className="weather-card bg-slate-800 rounded-xl overflow-hidden shadow-2xl transform transition-all duration-300 hover:scale-105 hover:shadow-3xl cursor-pointer relative active:scale-100"
     >
       <button
         onClick={(e) => {
@@ -119,18 +119,18 @@ const DashboardWeatherCard = ({ weather, onClick }: DashboardWeatherCardProps) =
         <span className="text-xl leading-none">×</span>
       </button>
 
-      <div className={`bg-gradient-to-br ${getWeatherColor(mainStatus)} p-8 relative overflow-hidden`}>
-        <div className="absolute top-0 right-0 w-64 h-64 opacity-10">
+      <div className={`bg-gradient-to-br ${getWeatherColor(mainStatus)} p-4 sm:p-6 lg:p-8 relative overflow-hidden`}>
+        <div className="absolute top-0 right-0 w-48 h-48 sm:w-64 sm:h-64 opacity-10">
           <div className="absolute inset-0 transform scale-150">
             {getWeatherIcon(mainStatus, 256)}
           </div>
         </div>
 
         <div className="relative z-10">
-          <h2 className="text-3xl font-bold text-white mb-1">
+          <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-1">
             {weather.name}, {weather.sys.country}
           </h2>
-          <p className="text-white/80 text-sm mb-6">
+          <p className="text-white/80 text-xs sm:text-sm mb-4 sm:mb-6">
             {new Date().toLocaleTimeString('en-US', {
               hour: '2-digit',
               minute: '2-digit',
@@ -140,21 +140,21 @@ const DashboardWeatherCard = ({ weather, onClick }: DashboardWeatherCardProps) =
             })}
           </p>
 
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
+          <div className="flex items-center justify-between flex-wrap sm:flex-nowrap gap-4">
+            <div className="flex items-center gap-2 sm:gap-4">
               <div className="text-white">
-                {getWeatherIcon(mainStatus, 48)}
+                {getWeatherIcon(mainStatus, 40)}
               </div>
               <div>
-                <p className="text-white text-lg font-medium">{formatDescription(description)}</p>
+                <p className="text-white text-sm sm:text-base lg:text-lg font-medium">{formatDescription(description)}</p>
               </div>
             </div>
 
             <div className="text-right">
-              <div className="text-6xl font-bold text-white mb-2">
+              <div className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-1 sm:mb-2">
                 {temp}°C
               </div>
-              <div className="text-white/90 text-sm space-y-1">
+              <div className="text-white/90 text-xs sm:text-sm space-y-0.5 sm:space-y-1">
                 <p>Temp Min: {tempMin}°C</p>
                 <p>Temp Max: {tempMax}°C</p>
               </div>
@@ -163,33 +163,33 @@ const DashboardWeatherCard = ({ weather, onClick }: DashboardWeatherCardProps) =
         </div>
       </div>
 
-      <div className="bg-slate-700/50 backdrop-blur-sm p-6">
-        <div className="grid grid-cols-3 gap-6 text-white/90 text-sm">
+      <div className="bg-slate-700/50 backdrop-blur-sm p-4 sm:p-6">
+        <div className="grid grid-cols-3 gap-3 sm:gap-6 text-white/90 text-xs sm:text-sm">
           <div>
-            <p className="text-xs text-white/60 mb-1">Pressure:</p>
-            <p className="font-semibold">{weather.main.pressure}hPa</p>
-            <p className="text-xs text-white/60 mt-2 mb-1">Humidity:</p>
-            <p className="font-semibold">{weather.main.humidity}%</p>
-            <p className="text-xs text-white/60 mt-2 mb-1">Visibility:</p>
-            <p className="font-semibold">{(weather.visibility / 1000).toFixed(1)}km</p>
+            <p className="text-[10px] sm:text-xs text-white/60 mb-1">Pressure:</p>
+            <p className="font-semibold text-xs sm:text-sm">{weather.main.pressure}hPa</p>
+            <p className="text-[10px] sm:text-xs text-white/60 mt-2 mb-1">Humidity:</p>
+            <p className="font-semibold text-xs sm:text-sm">{weather.main.humidity}%</p>
+            <p className="text-[10px] sm:text-xs text-white/60 mt-2 mb-1">Visibility:</p>
+            <p className="font-semibold text-xs sm:text-sm">{(weather.visibility / 1000).toFixed(1)}km</p>
           </div>
 
           <div className="flex flex-col items-center justify-center">
-            <p className="text-lg font-bold">{weather.wind.speed.toFixed(1)}m/s</p>
-            <p className="text-xs text-white/60">{weather.wind.deg} Degree</p>
+            <p className="text-base sm:text-lg font-bold">{weather.wind.speed.toFixed(1)}m/s</p>
+            <p className="text-[10px] sm:text-xs text-white/60">{weather.wind.deg} Degree</p>
           </div>
 
           <div className="text-right">
-            <p className="text-xs text-white/60 mb-1">Sunrise:</p>
-            <p className="font-semibold">
+            <p className="text-[10px] sm:text-xs text-white/60 mb-1">Sunrise:</p>
+            <p className="font-semibold text-xs sm:text-sm">
               {new Date((weather.sys_sunrise || 0) * 1000).toLocaleTimeString('en-US', {
                 hour: '2-digit',
                 minute: '2-digit',
                 hour12: false
               })}
             </p>
-            <p className="text-xs text-white/60 mt-2 mb-1">Sunset:</p>
-            <p className="font-semibold">
+            <p className="text-[10px] sm:text-xs text-white/60 mt-2 mb-1">Sunset:</p>
+            <p className="font-semibold text-xs sm:text-sm">
               {new Date((weather.sys_sunset || 0) * 1000).toLocaleTimeString('en-US', {
                 hour: '2-digit',
                 minute: '2-digit',
