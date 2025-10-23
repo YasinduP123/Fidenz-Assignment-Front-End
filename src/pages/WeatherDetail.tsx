@@ -103,7 +103,7 @@ export const WeatherDetail = () => {
 
               <button
                 onClick={() => navigate('/')}
-                className="absolute top-3 left-3 sm:top-6 sm:left-6 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-white/20 hover:bg-white/30 rounded-full text-white transition-all backdrop-blur-sm z-10"
+                className="absolute top-3 left-3 sm:top-6 sm:left-6 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-white/20 hover:bg-white/30 active:bg-white/40 rounded-full text-white transition-all backdrop-blur-sm z-50 touch-manipulation"
               >
                 <ArrowLeft size={20} className="sm:w-6 sm:h-6" />
               </button>
