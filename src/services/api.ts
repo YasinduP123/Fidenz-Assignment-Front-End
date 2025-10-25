@@ -4,9 +4,7 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
+  headers: { 'Content-Type': 'application/json' },
 });
 
 export const setAuthToken = (token: string | null) => {
@@ -17,135 +15,51 @@ export const setAuthToken = (token: string | null) => {
   }
 };
 
-export interface ApiResponse<T> {
-  success: boolean;
-  message: string;
-  data: T;
-  statusCode: number;
-}
+export interface ApiResponse<T> { success: boolean; message: string; data: T; statusCode: number; }
 
-export interface CityDto {
-  id: number;
-  name: string;
-  country: string;
-  state?: string;
-  latitude: number;
-  longitude: number;
+export interface CityWeatherDto {
   cityCode: string;
+  name: string;
+  description: string;
+  temp: number;
+  humidity?: number;
+  feels_like?: number;
+  wind_speed?: number;
+  cached?: boolean;
+  staticStatus?: string;
+  [key: string]: any;
 }
 
-export interface WeatherData {
-  coord: {
-    lon: number;
-    lat: number;
-  };
-  weather: Array<{
-    id: number;
-    main: string;
-    description: string;
-    icon: string;
-  }>;
-  base: string;
-  main: {
-    temp: number;
-    feels_like: number;
-    temp_min: number;
-    temp_max: number;
-    pressure: number;
-    humidity: number;
-  };
-  visibility: number;
-  wind: {
-    speed: number;
-    deg: number;
-  };
-  clouds: {
-    all: number;
-  };
-  dt: number;
-  sys: {
-    type: number;
-    id: number;
-    country: string;
-    sunrise: number;
-    sunset: number;
-  };
-  timezone: number;
-  id: number;
-  name: string;
-  cod: number;
-}
-
-export interface UserDto {
-  id: number;
-  auth0Id: string;
-  email: string;
-  name: string;
-  picture: string;
-  createdAt: string;
-  lastLoginAt: string;
-  active: boolean;
-  preferredCity?: string;
-  temperatureUnit?: string;
-}
+export const withAuth = async <T>(
+  apiCall: () => Promise<T>,
+  getToken: () => Promise<string>
+): Promise<T> => {
+  const token = await getToken();
+  setAuthToken(token);
+  return apiCall();
+};
 
 export const weatherApi = {
-  getAllCities: async () => {
-    const response = await apiClient.get<ApiResponse<CityDto[]>>('/weather/cities');
-    return response.data;
-  },
-
-  searchCities: async (name: string) => {
-    const response = await apiClient.get<ApiResponse<CityDto[]>>(`/weather/cities/search`, {
-      params: { name }
-    });
-    return response.data;
-  },
-
-  getWeatherByCity: async (cityCode: string) => {
-    const response = await apiClient.get<ApiResponse<WeatherData>>(`/weather/${cityCode}`);
-    return response.data;
-  },
-
   getAllCitiesWeather: async () => {
-    const response = await apiClient.get<ApiResponse<WeatherData[]>>('/weather/cities/all-weather');
+    const response = await apiClient.get<ApiResponse<CityWeatherDto[]>>('/weather/cities/all-weather', {
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      }
+    });
     return response.data;
   },
 
-  clearCityCache: async (cityCode: string) => {
-    const response = await apiClient.delete<ApiResponse<string>>(`/weather/cache/${cityCode}`);
-    return response.data;
-  },
-
-  clearAllCache: async () => {
-    const response = await apiClient.delete<ApiResponse<string>>('/weather/cache/all');
-    return response.data;
-  }
-};
-
-export const userApi = {
-  syncUser: async () => {
-    const response = await apiClient.post<ApiResponse<UserDto>>('/user/sync');
-    return response.data;
-  },
-
-  getProfile: async () => {
-    const response = await apiClient.get<ApiResponse<UserDto>>('/user/profile');
-    return response.data;
-  },
-
-  getCurrentUser: async () => {
-    const response = await apiClient.get<ApiResponse<Record<string, any>>>('/user/me');
-    return response.data;
-  },
-
-  updatePreferences: async (preferredCity: string, temperatureUnit: string) => {
-    const response = await apiClient.put<ApiResponse<UserDto>>('/user/preferences', {
-      preferredCity,
-      temperatureUnit
+  getWeatherByCity: async (cityId: string) => {
+    const response = await apiClient.get<ApiResponse<CityWeatherDto>>(`/weather/${cityId}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      }
     });
     return response.data;
   }
 };
+
 
 export default apiClient;

@@ -1,19 +1,14 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { Auth0Provider } from '@auth0/auth0-react';
+import { Auth0ProviderWithNavigate } from './Auth0Navigator';
 import { Dashboard } from './pages/Dashboard';
 import { WeatherDetail } from './pages/WeatherDetail';
 import Login from './pages/Login';
 import ProtectedRoute from './components/ProtectedRoute';
-import { auth0Config } from './config/auth0';
 
 function App() {
   return (
-    <Auth0Provider
-      domain={auth0Config.domain}
-      clientId={auth0Config.clientId}
-      authorizationParams={auth0Config.authorizationParams}
-    >
-      <Router>
+    <Router>
+      <Auth0ProviderWithNavigate>
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route
@@ -33,8 +28,8 @@ function App() {
             }
           />
         </Routes>
-      </Router>
-    </Auth0Provider>
+      </Auth0ProviderWithNavigate>
+    </Router>
   );
 }
 

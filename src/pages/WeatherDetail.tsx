@@ -1,13 +1,16 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, CloudSun, Navigation } from 'lucide-react';
-import { weatherApi, WeatherData } from '../services/api';
+import { ArrowLeft, CloudSun } from 'lucide-react';
+import { CityWeatherDto, weatherApi, withAuth } from '../services/api';
 import { getWeatherIcon, getWeatherColor } from '../utils/weatherIcons';
+import { useAuth0 } from '@auth0/auth0-react';
 
 export const WeatherDetail = () => {
   const { cityId } = useParams<{ cityId: string }>();
   const navigate = useNavigate();
-  const [weather, setWeather] = useState<WeatherData | null>(null);
+  const { getAccessTokenSilently } = useAuth0();
+
+  const [weather, setWeather] = useState<CityWeatherDto | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -18,28 +21,30 @@ export const WeatherDetail = () => {
       try {
         setLoading(true);
         setError(null);
-        const response = await weatherApi.getWeatherByCity(cityId);
+
+        const response = await withAuth(
+          () => weatherApi.getWeatherByCity(cityId),
+          async () =>
+            getAccessTokenSilently({
+              authorizationParams: { audience: import.meta.env.VITE_AUTH0_AUDIENCE }
+            })
+        );
+
         if (response.success) {
           setWeather(response.data);
         } else {
           setError(response.message);
         }
       } catch (err: any) {
-        setError(err.response?.data?.message || 'Failed to load weather details');
         console.error('Error loading weather details:', err);
+        setError(err.response?.data?.message || 'Failed to load weather details');
       } finally {
         setLoading(false);
       }
     };
 
     loadWeatherDetail();
-  }, [cityId]);
-
-  const formatDescription = (desc: string) => {
-    return desc.split(' ').map(word =>
-      word.charAt(0).toUpperCase() + word.slice(1)
-    ).join(' ');
-  };
+  }, [cityId, getAccessTokenSilently]);
 
   if (loading) {
     return (
@@ -68,23 +73,12 @@ export const WeatherDetail = () => {
     );
   }
 
-  const mainStatus = weather.weather[0].main;
-  const description = weather.weather[0].description;
-  const temp = Math.round(weather.main.temp);
-  const tempMin = Math.round(weather.main.temp_min);
-  const tempMax = Math.round(weather.main.temp_max);
-
-  const sunrise = new Date(weather.sys.sunrise * 1000).toLocaleTimeString('en-US', {
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: false
-  });
-
-  const sunset = new Date(weather.sys.sunset * 1000).toLocaleTimeString('en-US', {
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: false
-  });
+  const mainStatus = weather.staticStatus || 'Clear';
+  const description = weather.description || '';
+  const temp = Math.round(weather.temp);
+  const feelsLike = weather.feels_like ? Math.round(weather.feels_like) : undefined;
+  const humidity = weather.humidity || 0;
+  const windSpeed = weather.wind_speed || 0;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
@@ -114,7 +108,7 @@ export const WeatherDetail = () => {
 
               <div className="relative z-10 text-center">
                 <h2 className="text-2xl sm:text-3xl lg:text-5xl font-bold text-white mb-2 sm:mb-3">
-                  {weather.name}, {weather.sys.country}
+                  {weather.name}
                 </h2>
                 <p className="text-white/90 text-sm sm:text-base lg:text-lg mb-6 sm:mb-8 lg:mb-12">
                   {new Date().toLocaleTimeString('en-US', {
@@ -135,49 +129,42 @@ export const WeatherDetail = () => {
                     <div className="text-5xl sm:text-6xl lg:text-8xl font-bold text-white mb-2 sm:mb-4">
                       {temp}°C
                     </div>
-                    <p className="text-white text-lg sm:text-xl lg:text-2xl font-medium mb-2">{formatDescription(description)}</p>
+                    <p className="text-white text-lg sm:text-xl lg:text-2xl font-medium mb-2">
+                      {description}
+                    </p>
                   </div>
                 </div>
 
-                <div className="flex justify-center gap-8 sm:gap-12 lg:gap-16 text-white/90 text-sm sm:text-base lg:text-lg">
+                <div className="flex justify-center gap-8 sm:gap-12 lg:gap-16 text-white/90">
                   <div>
-                    <p className="text-white/70 mb-1">Temp Min:</p>
-                    <p className="font-semibold text-xl sm:text-2xl">{tempMin}°C</p>
+                    <p className="text-white/70 mb-1">Feels Like</p>
+                    <p className="font-semibold text-xl sm:text-2xl">
+                      {feelsLike ? `${feelsLike}°C` : '—'}
+                    </p>
                   </div>
                   <div>
-                    <p className="text-white/70 mb-1">Temp Max:</p>
-                    <p className="font-semibold text-xl sm:text-2xl">{tempMax}°C</p>
+                    <p className="text-white/70 mb-1">Humidity</p>
+                    <p className="font-semibold text-xl sm:text-2xl">{humidity}%</p>
                   </div>
                 </div>
               </div>
             </div>
 
             <div className="bg-slate-700/50 backdrop-blur-sm p-4 sm:p-8 lg:p-12">
-              <div className="grid grid-cols-3 gap-4 sm:gap-8 lg:gap-12 text-white/90">
-                <div>
-                  <p className="text-[10px] sm:text-xs lg:text-sm text-white/60 mb-1 sm:mb-2">Pressure:</p>
-                  <p className="font-semibold text-sm sm:text-base lg:text-xl mb-3 sm:mb-6">{weather.main.pressure}hPa</p>
-                  <p className="text-[10px] sm:text-xs lg:text-sm text-white/60 mb-1 sm:mb-2">Humidity:</p>
-                  <p className="font-semibold text-sm sm:text-base lg:text-xl mb-3 sm:mb-6">{weather.main.humidity}%</p>
-                  <p className="text-[10px] sm:text-xs lg:text-sm text-white/60 mb-1 sm:mb-2">Visibility:</p>
-                  <p className="font-semibold text-sm sm:text-base lg:text-xl">{(weather.visibility / 1000).toFixed(1)}km</p>
+              <div className="flex items-center justify-between text-white/90 gap-4">
+                <div className="flex-1">
+                  <p className="text-sm text-white/60">Humidity</p>
+                  <p className="font-semibold text-lg">{humidity}%</p>
                 </div>
 
-                <div className="flex flex-col items-center justify-center border-x border-slate-600/50">
-                  <Navigation
-                    size={32}
-                    className="text-white/80 mb-2 sm:mb-4 sm:w-10 sm:h-10 lg:w-12 lg:h-12"
-                    style={{ transform: `rotate(${weather.wind.deg}deg)` }}
-                  />
-                  <p className="text-xl sm:text-2xl lg:text-3xl font-bold mb-1 sm:mb-2">{weather.wind.speed.toFixed(1)}m/s</p>
-                  <p className="text-xs sm:text-sm lg:text-lg text-white/60">{weather.wind.deg} Degree</p>
+                <div className="flex-1 text-center">
+                  <p className="text-sm text-white/60">Wind Speed</p>
+                  <p className="font-semibold text-lg">{windSpeed.toFixed(1)} m/s</p>
                 </div>
 
-                <div className="text-right">
-                  <p className="text-[10px] sm:text-xs lg:text-sm text-white/60 mb-1 sm:mb-2">Sunrise:</p>
-                  <p className="font-semibold text-sm sm:text-base lg:text-xl mb-3 sm:mb-6">{sunrise}</p>
-                  <p className="text-[10px] sm:text-xs lg:text-sm text-white/60 mb-1 sm:mb-2">Sunset:</p>
-                  <p className="font-semibold text-sm sm:text-base lg:text-xl">{sunset}</p>
+                <div className="flex-1 text-right">
+                  <p className="text-sm text-white/60">Cached</p>
+                  <p className="font-semibold text-lg">{weather.cached ? 'Yes' : 'No'}</p>
                 </div>
               </div>
             </div>

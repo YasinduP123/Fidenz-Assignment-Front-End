@@ -29,20 +29,20 @@ export const getWeatherColor = (status: string): string => {
   const statusLower = status.toLowerCase();
 
   if (statusLower.includes('clear') || statusLower.includes('sun')) {
-    return 'from-orange-400 to-orange-600';
+    return 'bg-gradient-to-r from-amber-500 to-orange-600';
+  }
+  if (statusLower.includes('clouds')) {
+    return 'bg-gradient-to-r from-blue-400 to-blue-600';
   }
   if (statusLower.includes('rain')) {
-    return 'from-teal-400 to-teal-600';
-  }
-  if (statusLower.includes('cloud')) {
-    return 'from-blue-400 to-blue-600';
+    return 'bg-gradient-to-r from-cyan-500 to-blue-500';
   }
   if (statusLower.includes('snow')) {
-    return 'from-cyan-300 to-cyan-500';
+    return 'bg-gradient-to-r from-indigo-400 to-violet-500';
   }
   if (statusLower.includes('mist') || statusLower.includes('fog')) {
-    return 'from-red-400 to-red-600';
+    return 'bg-gradient-to-r from-rose-400 to-rose-600';
   }
 
-  return 'from-slate-400 to-slate-600';
+  return 'bg-gradient-to-r from-slate-500 to-slate-600';
 };

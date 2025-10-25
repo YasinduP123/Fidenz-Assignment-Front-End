@@ -16,13 +16,23 @@
 @layer components {
   .weather-card {
     @apply transition-all duration-300;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(8px);
   }
 
   .weather-card:hover {
-    @apply shadow-2xl;
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
   }
 
   .weather-icon {
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+    filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.15));
+  }
+}
+
+@layer utilities {
+  .bg-gradient-weather {
+    background: linear-gradient(45deg, rgba(66,135,245,0.7) 0%, rgba(96,154,243,0.7) 100%);
   }
 }
