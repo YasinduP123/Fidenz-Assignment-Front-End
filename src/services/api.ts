@@ -21,13 +21,22 @@ export interface CityWeatherDto {
   cityCode: string;
   name: string;
   description: string;
+  icon: string;
   temp: number;
-  humidity?: number;
-  feels_like?: number;
-  wind_speed?: number;
-  cached?: boolean;
-  staticStatus?: string;
-  [key: string]: any;
+  feels_like: number;
+  temp_min: number;
+  temp_max: number;
+  pressure: number;
+  humidity: number;
+  visibility: number;
+  wind_speed: number;
+  wind_deg: number;
+  sunrise: string;
+  sunset: string;
+  cached: boolean;
+  cityName: string;
+  staticStatus: string;
+  staticTemp: string;
 }
 
 export const withAuth = async <T>(

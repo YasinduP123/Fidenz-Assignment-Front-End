@@ -160,9 +160,11 @@ const DashboardWeatherCard = ({ weather, onClick }: DashboardWeatherCardProps) =
   const tempMax = weather.temp_max ? Math.round(weather.temp_max) : temp + 3;
   const humidity = weather.humidity || 0;
   const windSpeed = weather.wind_speed || 0;
-  const windDegree = weather.wind_degree || 120;
+  const windDegree = weather.wind_deg || 120;
   const pressure = weather.pressure || 1018;
   const visibility = weather.visibility ? (weather.visibility / 1000).toFixed(1) : '8.0';
+  const sunrise = weather.sunrise || 'undefined';
+  const sunset = weather.sunset || 'undefined';
 
   return (
     <div
@@ -240,11 +242,11 @@ const DashboardWeatherCard = ({ weather, onClick }: DashboardWeatherCardProps) =
           <div className="space-y-2 text-right text-sm">
             <div>
               <p className="text-white/60 text-xs mb-0.5">Sunrise:</p>
-              <p className="font-semibold">6:05am</p>
+              <p className="font-semibold">{sunrise}</p>
             </div>
             <div>
               <p className="text-white/60 text-xs mb-0.5">Sunset:</p>
-              <p className="font-semibold">6:05am</p>
+              <p className="font-semibold">{sunset}</p>
             </div>
           </div>
         </div>

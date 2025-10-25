@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, CloudSun } from 'lucide-react';
+import { ArrowLeft, CloudSun, Sunrise } from 'lucide-react';
 import { CityWeatherDto, weatherApi, withAuth } from '../services/api';
 import { getWeatherIcon, getWeatherColor } from '../utils/weatherIcons';
 import { useAuth0 } from '@auth0/auth0-react';
@@ -80,9 +80,11 @@ export const WeatherDetail = () => {
   const tempMax = weather.temp_max ? Math.round(weather.temp_max) : temp + 3;
   const humidity = weather.humidity || 0;
   const windSpeed = weather.wind_speed || 0;
-  const windDegree = weather.wind_degree || 120;
+  const windDegree = weather.wind_deg || 120;
   const pressure = weather.pressure || 1018;
   const visibility = weather.visibility ? (weather.visibility / 1000).toFixed(1) : '8.0';
+  const sunrise = weather.sunrise || 'undefined';
+  const sunset = weather.sunset || 'undefined';
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
@@ -174,11 +176,11 @@ export const WeatherDetail = () => {
                 <div className="space-y-3 text-right">
                   <div>
                     <p className="text-white/60 text-sm mb-1">Sunrise:</p>
-                    <p className="font-semibold text-base">6:05am</p>
+                    <p className="font-semibold text-base">{sunrise}</p>
                   </div>
                   <div>
                     <p className="text-white/60 text-sm mb-1">Sunset:</p>
-                    <p className="font-semibold text-base">6:05am</p>
+                    <p className="font-semibold text-base">{sunset}</p>
                   </div>
                 </div>
               </div>

@@ -8,11 +8,10 @@ interface WeatherCardProps {
 }
 
 export const WeatherCard = ({ weather, onClick }: WeatherCardProps) => {
-  const mainStatus = weather.staticStatus || 'Clear';
-  const description = weather.description || '';
+  const mainStatus = weather.staticStatus;
   const temp = Math.round(weather.temp);
-  const windSpeed = weather.wind_speed || 0;
-  const humidity = weather.humidity || 0;
+  const tempMin = Math.round(weather.temp_min);
+  const tempMax = Math.round(weather.temp_max);
 
   return (
     <div onClick={onClick} className="weather-card max-w-md w-full mx-auto bg-slate-800/50 rounded-xl overflow-hidden backdrop-blur-sm">
@@ -32,6 +31,10 @@ export const WeatherCard = ({ weather, onClick }: WeatherCardProps) => {
           </div>
           <div className="text-right">
             <div className="text-5xl font-bold text-white">{temp}°C</div>
+            <div className="text-white/90 text-sm space-y-0.5">
+              <p>Temp Min: {tempMin}°C</p>
+              <p>Temp Max: {tempMax}°C</p>
+            </div>
           </div>
         </div>
 
@@ -39,7 +42,7 @@ export const WeatherCard = ({ weather, onClick }: WeatherCardProps) => {
           <div className="text-white">
             {getWeatherIcon(mainStatus, 48)}
           </div>
-          <p className="text-lg font-medium text-white capitalize">{description}</p>
+          <p className="text-lg font-medium text-white capitalize">{weather.description}</p>
         </div>
       </div>
 
@@ -48,15 +51,15 @@ export const WeatherCard = ({ weather, onClick }: WeatherCardProps) => {
           <div className="space-y-3">
             <div>
               <p className="text-xs text-white/60 mb-1">Pressure</p>
-              <p className="text-sm font-semibold text-white">1,012 hPa</p>
+              <p className="text-sm font-semibold text-white">{weather.pressure} hPa</p>
             </div>
             <div>
               <p className="text-xs text-white/60 mb-1">Humidity</p>
-              <p className="text-sm font-semibold text-white">{humidity}%</p>
+              <p className="text-sm font-semibold text-white">{weather.humidity}%</p>
             </div>
             <div>
               <p className="text-xs text-white/60 mb-1">Visibility</p>
-              <p className="text-sm font-semibold text-white">8.0 km</p>
+              <p className="text-sm font-semibold text-white">{(weather.visibility / 1000).toFixed(1)} km</p>
             </div>
           </div>
 
@@ -65,22 +68,22 @@ export const WeatherCard = ({ weather, onClick }: WeatherCardProps) => {
               className="text-white/80 mb-2" 
               size={28} 
               style={{ 
-                transform: `rotate(${weather.wind_degree || 0}deg)`,
+                transform: `rotate(${weather.wind_deg}deg)`,
                 transition: 'transform 0.3s ease-in-out'
               }} 
             />
-            <p className="text-sm font-semibold text-white">{windSpeed} m/s</p>
-            <p className="text-xs text-white/60">{weather.wind_degree || 0}°</p>
+            <p className="text-sm font-semibold text-white">{weather.wind_speed.toFixed(1)} m/s</p>
+            <p className="text-xs text-white/60">{weather.wind_deg}°</p>
           </div>
 
           <div className="text-right space-y-3">
             <div>
               <p className="text-xs text-white/60 mb-1">Sunrise</p>
-              <p className="text-sm font-semibold text-white">6:05</p>
+              <p className="text-sm font-semibold text-white">{weather.sunrise}</p>
             </div>
             <div>
               <p className="text-xs text-white/60 mb-1">Sunset</p>
-              <p className="text-sm font-semibold text-white">18:57</p>
+              <p className="text-sm font-semibold text-white">{weather.sunset}</p>
             </div>
           </div>
         </div>
