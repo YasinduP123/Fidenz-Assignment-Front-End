@@ -76,9 +76,13 @@ export const WeatherDetail = () => {
   const mainStatus = weather.staticStatus || 'Clear';
   const description = weather.description || '';
   const temp = Math.round(weather.temp);
-  const feelsLike = weather.feels_like ? Math.round(weather.feels_like) : undefined;
+  const tempMin = weather.temp_min ? Math.round(weather.temp_min) : temp - 2;
+  const tempMax = weather.temp_max ? Math.round(weather.temp_max) : temp + 3;
   const humidity = weather.humidity || 0;
   const windSpeed = weather.wind_speed || 0;
+  const windDegree = weather.wind_degree || 120;
+  const pressure = weather.pressure || 1018;
+  const visibility = weather.visibility ? (weather.visibility / 1000).toFixed(1) : '8.0';
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
@@ -92,27 +96,25 @@ export const WeatherDetail = () => {
 
         <div className="max-w-4xl mx-auto">
           <div className="bg-slate-800 rounded-xl sm:rounded-2xl overflow-hidden shadow-2xl">
-            <div className={`bg-gradient-to-br ${getWeatherColor(mainStatus)} p-6 sm:p-8 lg:p-12 relative overflow-hidden`}>
-              <div className="absolute top-0 right-0 w-48 h-48 sm:w-72 sm:h-72 lg:w-96 lg:h-96 opacity-10">
-                <div className="absolute inset-0 transform scale-150">
-                  {getWeatherIcon(mainStatus, 384)}
-                </div>
-              </div>
+            <div className={`bg-gradient-to-br ${getWeatherColor(mainStatus)} p-8 sm:p-12 relative overflow-hidden`}>
+              <div className="absolute bottom-0 left-0 w-48 h-48 sm:w-64 sm:h-64 bg-black/10 rounded-full -mb-24 -ml-24 sm:-mb-32 sm:-ml-32"></div>
+              <div className="absolute bottom-0 right-0 w-56 h-56 sm:w-72 sm:h-72 bg-black/10 rounded-full -mb-28 -mr-28 sm:-mb-36 sm:-mr-36"></div>
+              <div className="absolute top-0 right-0 w-32 h-32 sm:w-40 sm:h-40 bg-white/5 rounded-full -mt-16 -mr-16 sm:-mt-20 sm:-mr-20"></div>
 
               <button
                 onClick={() => navigate('/')}
-                className="absolute top-3 left-3 sm:top-6 sm:left-6 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-white/20 hover:bg-white/30 active:bg-white/40 rounded-full text-white transition-all backdrop-blur-sm z-50 touch-manipulation"
+                className="absolute top-6 left-6 w-12 h-12 flex items-center justify-center bg-white/20 hover:bg-white/30 active:bg-white/40 rounded-full text-white transition-all backdrop-blur-sm z-50 touch-manipulation"
               >
-                <ArrowLeft size={20} className="sm:w-6 sm:h-6" />
+                <ArrowLeft size={24} />
               </button>
 
               <div className="relative z-10 text-center">
-                <h2 className="text-2xl sm:text-3xl lg:text-5xl font-bold text-white mb-2 sm:mb-3">
+                <h2 className="text-3xl sm:text-4xl font-bold text-white mb-2">
                   {weather.name}
                 </h2>
-                <p className="text-white/90 text-sm sm:text-base lg:text-lg mb-6 sm:mb-8 lg:mb-12">
+                <p className="text-white/90 text-sm sm:text-base mb-8 sm:mb-12">
                   {new Date().toLocaleTimeString('en-US', {
-                    hour: '2-digit',
+                    hour: 'numeric',
                     minute: '2-digit',
                     hour12: true,
                     month: 'short',
@@ -120,51 +122,64 @@ export const WeatherDetail = () => {
                   })}
                 </p>
 
-                <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 lg:gap-8 mb-6 sm:mb-8 lg:mb-12">
+                <div className="flex items-center justify-center gap-12 mb-8">
                   <div className="text-white">
-                    {getWeatherIcon(mainStatus, 64)}
+                    {getWeatherIcon(mainStatus, 80)}
                   </div>
-                  <div className="hidden sm:block h-20 lg:h-32 w-px bg-white/30"></div>
+                  <p className="text-white text-xl sm:text-2xl font-medium">
+                    {description
+                      .split(' ')
+                      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                      .join(' ')}
+                  </p>
+                  <div className="h-20 w-px bg-white/30"></div>
                   <div className="text-center">
-                    <div className="text-5xl sm:text-6xl lg:text-8xl font-bold text-white mb-2 sm:mb-4">
+                    <div className="text-6xl sm:text-7xl font-bold text-white mb-2">
                       {temp}°C
                     </div>
-                    <p className="text-white text-lg sm:text-xl lg:text-2xl font-medium mb-2">
-                      {description}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex justify-center gap-8 sm:gap-12 lg:gap-16 text-white/90">
-                  <div>
-                    <p className="text-white/70 mb-1">Feels Like</p>
-                    <p className="font-semibold text-xl sm:text-2xl">
-                      {feelsLike ? `${feelsLike}°C` : '—'}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-white/70 mb-1">Humidity</p>
-                    <p className="font-semibold text-xl sm:text-2xl">{humidity}%</p>
+                    <div className="text-white/90 text-sm sm:text-base space-y-1">
+                      <p>Temp Min: {tempMin}°c</p>
+                      <p>Temp Max: {tempMax}°c</p>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="bg-slate-700/50 backdrop-blur-sm p-4 sm:p-8 lg:p-12">
-              <div className="flex items-center justify-between text-white/90 gap-4">
-                <div className="flex-1">
-                  <p className="text-sm text-white/60">Humidity</p>
-                  <p className="font-semibold text-lg">{humidity}%</p>
+            <div className="bg-slate-900/80 p-6 sm:p-8">
+              <div className="grid grid-cols-3 gap-6 text-white">
+                <div className="space-y-3">
+                  <div>
+                    <p className="text-white/60 text-sm mb-1">Pressure:</p>
+                    <p className="font-semibold text-base">{pressure}hPa</p>
+                  </div>
+                  <div>
+                    <p className="text-white/60 text-sm mb-1">Humidity:</p>
+                    <p className="font-semibold text-base">{humidity}%</p>
+                  </div>
+                  <div>
+                    <p className="text-white/60 text-sm mb-1">Visibility:</p>
+                    <p className="font-semibold text-base">{visibility}km</p>
+                  </div>
                 </div>
 
-                <div className="flex-1 text-center">
-                  <p className="text-sm text-white/60">Wind Speed</p>
-                  <p className="font-semibold text-lg">{windSpeed.toFixed(1)} m/s</p>
+                <div className="flex flex-col items-center justify-center">
+                  <svg className="w-10 h-10 mb-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ transform: `rotate(${windDegree}deg)` }}>
+                    <path d="M12 2l-4 8h8l-4-8z" fill="currentColor"/>
+                    <line x1="12" y1="10" x2="12" y2="22" />
+                  </svg>
+                  <p className="font-semibold text-base">{windSpeed.toFixed(1)}m/s {windDegree} Degree</p>
                 </div>
 
-                <div className="flex-1 text-right">
-                  <p className="text-sm text-white/60">Cached</p>
-                  <p className="font-semibold text-lg">{weather.cached ? 'Yes' : 'No'}</p>
+                <div className="space-y-3 text-right">
+                  <div>
+                    <p className="text-white/60 text-sm mb-1">Sunrise:</p>
+                    <p className="font-semibold text-base">6:05am</p>
+                  </div>
+                  <div>
+                    <p className="text-white/60 text-sm mb-1">Sunset:</p>
+                    <p className="font-semibold text-base">6:05am</p>
+                  </div>
                 </div>
               </div>
             </div>
