@@ -1,20 +1,45 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CloudSun } from 'lucide-react';
-import { WeatherData } from '../services/weatherService';
+import { CloudSun, LogOut } from 'lucide-react';
+import { useAuth0 } from '@auth0/auth0-react';
+import { weatherApi, WeatherData } from '../services/api';
+import { getWeatherIcon, getWeatherColor } from '../utils/weatherIcons';
 
-interface DashboardProps {
-  weatherData: WeatherData[];
-  loading: boolean;
-  error: string | null;
-}
-
-export const Dashboard = ({ weatherData, loading, error }: DashboardProps) => {
+export const Dashboard = () => {
   const navigate = useNavigate();
+  const { logout, user } = useAuth0();
   const [searchQuery, setSearchQuery] = useState('');
+  const [weatherData, setWeatherData] = useState<WeatherData[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetchWeatherData();
+  }, []);
+
+  const fetchWeatherData = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await weatherApi.getAllCitiesWeather();
+      if (response.success) {
+        setWeatherData(response.data);
+      } else {
+        setError(response.message);
+      }
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Failed to fetch weather data');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleCardClick = (cityId: number) => {
     navigate(`/weather/${cityId}`);
+  };
+
+  const handleLogout = () => {
+    logout({ logoutParams: { returnTo: window.location.origin } });
   };
 
   const filteredWeather = weatherData.filter(weather =>
@@ -25,22 +50,38 @@ export const Dashboard = ({ weatherData, loading, error }: DashboardProps) => {
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
         <header className="text-center mb-8 sm:mb-12">
-          <div className="flex items-center justify-center gap-2 sm:gap-3 mb-6 sm:mb-8">
+          <div className="flex items-center justify-center gap-2 sm:gap-3 mb-6 sm:mb-8 relative">
             <CloudSun size={36} className="text-blue-400 sm:w-12 sm:h-12" />
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white">Weather App</h1>
+
+            <div className="absolute right-0 top-0 flex items-center gap-3">
+              {user && (
+                <div className="hidden sm:flex items-center gap-2 bg-slate-800/50 px-4 py-2 rounded-lg">
+                  {user.picture && (
+                    <img src={user.picture} alt={user.name} className="w-8 h-8 rounded-full" />
+                  )}
+                  <span className="text-white text-sm">{user.name}</span>
+                </div>
+              )}
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
+                title="Logout"
+              >
+                <LogOut size={18} />
+                <span className="hidden sm:inline">Logout</span>
+              </button>
+            </div>
           </div>
 
-          <div className="max-w-2xl mx-auto flex flex-col sm:flex-row gap-3">
+          <div className="max-w-2xl mx-auto">
             <input
               type="text"
-              placeholder="Enter a city"
+              placeholder="Search for a city..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="flex-1 px-4 sm:px-6 py-3 bg-slate-800 text-white rounded-lg border-2 border-slate-700 focus:border-blue-500 focus:outline-none transition-colors placeholder:text-slate-500 text-sm sm:text-base"
+              className="w-full px-4 sm:px-6 py-3 bg-slate-800 text-white rounded-lg border-2 border-slate-700 focus:border-blue-500 focus:outline-none transition-colors placeholder:text-slate-500 text-sm sm:text-base"
             />
-            <button className="px-6 sm:px-8 py-3 bg-gradient-to-r from-violet-600 to-violet-700 text-white font-semibold rounded-lg hover:from-violet-700 hover:to-violet-800 transition-all shadow-lg whitespace-nowrap">
-              Add City
-            </button>
           </div>
         </header>
 
@@ -56,6 +97,12 @@ export const Dashboard = ({ weatherData, loading, error }: DashboardProps) => {
         {error && (
           <div className="max-w-2xl mx-auto bg-red-500/20 border border-red-500 rounded-lg p-6 text-center">
             <p className="text-red-200 text-lg">{error}</p>
+            <button
+              onClick={fetchWeatherData}
+              className="mt-4 px-6 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
+            >
+              Retry
+            </button>
           </div>
         )}
 
@@ -85,8 +132,6 @@ export const Dashboard = ({ weatherData, loading, error }: DashboardProps) => {
   );
 };
 
-import { getWeatherIcon, getWeatherColor } from '../utils/weatherIcons';
-
 interface DashboardWeatherCardProps {
   weather: WeatherData;
   onClick: () => void;
@@ -110,15 +155,6 @@ const DashboardWeatherCard = ({ weather, onClick }: DashboardWeatherCardProps) =
       onClick={onClick}
       className="weather-card bg-slate-800 rounded-xl overflow-hidden shadow-2xl transform transition-all duration-300 hover:scale-105 hover:shadow-3xl cursor-pointer relative active:scale-100"
     >
-      <button
-        onClick={(e) => {
-          e.stopPropagation();
-        }}
-        className="absolute top-4 right-4 z-20 w-8 h-8 flex items-center justify-center bg-slate-900/50 hover:bg-slate-900 rounded-full text-white transition-colors"
-      >
-        <span className="text-xl leading-none">×</span>
-      </button>
-
       <div className={`bg-gradient-to-br ${getWeatherColor(mainStatus)} p-4 sm:p-6 lg:p-8 relative overflow-hidden`}>
         <div className="absolute top-0 right-0 w-48 h-48 sm:w-64 sm:h-64 opacity-10">
           <div className="absolute inset-0 transform scale-150">
@@ -182,7 +218,7 @@ const DashboardWeatherCard = ({ weather, onClick }: DashboardWeatherCardProps) =
           <div className="text-right">
             <p className="text-[10px] sm:text-xs text-white/60 mb-1">Sunrise:</p>
             <p className="font-semibold text-xs sm:text-sm">
-              {new Date((weather.sys_sunrise || 0) * 1000).toLocaleTimeString('en-US', {
+              {new Date(weather.sys.sunrise * 1000).toLocaleTimeString('en-US', {
                 hour: '2-digit',
                 minute: '2-digit',
                 hour12: false
@@ -190,7 +226,7 @@ const DashboardWeatherCard = ({ weather, onClick }: DashboardWeatherCardProps) =
             </p>
             <p className="text-[10px] sm:text-xs text-white/60 mt-2 mb-1">Sunset:</p>
             <p className="font-semibold text-xs sm:text-sm">
-              {new Date((weather.sys_sunset || 0) * 1000).toLocaleTimeString('en-US', {
+              {new Date(weather.sys.sunset * 1000).toLocaleTimeString('en-US', {
                 hour: '2-digit',
                 minute: '2-digit',
                 hour12: false

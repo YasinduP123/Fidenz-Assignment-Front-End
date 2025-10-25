@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, CloudSun, Navigation } from 'lucide-react';
-import { fetchWeatherData, WeatherData } from '../services/weatherService';
+import { weatherApi, WeatherData } from '../services/api';
 import { getWeatherIcon, getWeatherColor } from '../utils/weatherIcons';
 
 export const WeatherDetail = () => {
@@ -18,10 +18,14 @@ export const WeatherDetail = () => {
       try {
         setLoading(true);
         setError(null);
-        const data = await fetchWeatherData(cityId);
-        setWeather(data);
-      } catch (err) {
-        setError('Failed to load weather details. Please try again later.');
+        const response = await weatherApi.getWeatherByCity(cityId);
+        if (response.success) {
+          setWeather(response.data);
+        } else {
+          setError(response.message);
+        }
+      } catch (err: any) {
+        setError(err.response?.data?.message || 'Failed to load weather details');
         console.error('Error loading weather details:', err);
       } finally {
         setLoading(false);
@@ -70,13 +74,13 @@ export const WeatherDetail = () => {
   const tempMin = Math.round(weather.main.temp_min);
   const tempMax = Math.round(weather.main.temp_max);
 
-  const sunrise = new Date((weather.sys_sunrise || 0) * 1000).toLocaleTimeString('en-US', {
+  const sunrise = new Date(weather.sys.sunrise * 1000).toLocaleTimeString('en-US', {
     hour: '2-digit',
     minute: '2-digit',
     hour12: false
   });
 
-  const sunset = new Date((weather.sys_sunset || 0) * 1000).toLocaleTimeString('en-US', {
+  const sunset = new Date(weather.sys.sunset * 1000).toLocaleTimeString('en-US', {
     hour: '2-digit',
     minute: '2-digit',
     hour12: false

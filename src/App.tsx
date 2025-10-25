@@ -1,54 +1,40 @@
-import { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Auth0Provider } from '@auth0/auth0-react';
 import { Dashboard } from './pages/Dashboard';
 import { WeatherDetail } from './pages/WeatherDetail';
-import { fetchAllWeatherData, WeatherData } from './services/weatherService';
-import citiesData from './data/cities.json';
+import Login from './pages/Login';
+import ProtectedRoute from './components/ProtectedRoute';
+import { auth0Config } from './config/auth0';
 
 function App() {
-  const [weatherData, setWeatherData] = useState<WeatherData[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const loadWeatherData = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const cityCodes = citiesData.List.map(city => city.CityCode);
-        const data = await fetchAllWeatherData(cityCodes);
-        setWeatherData(data);
-      } catch (err) {
-        setError('Failed to load weather data. Please try again later.');
-        console.error('Error loading weather data:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadWeatherData();
-
-    const interval = setInterval(loadWeatherData, 5 * 60 * 1000);
-
-    return () => clearInterval(interval);
-  }, []);
-
   return (
-    <Router>
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <Dashboard
-              weatherData={weatherData}
-              loading={loading}
-              error={error}
-            />
-          }
-        />
-        <Route path="/weather/:cityId" element={<WeatherDetail />} />
-      </Routes>
-    </Router>
+    <Auth0Provider
+      domain={auth0Config.domain}
+      clientId={auth0Config.clientId}
+      authorizationParams={auth0Config.authorizationParams}
+    >
+      <Router>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/weather/:cityId"
+            element={
+              <ProtectedRoute>
+                <WeatherDetail />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </Router>
+    </Auth0Provider>
   );
 }
 
