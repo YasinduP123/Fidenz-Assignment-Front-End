@@ -36,3 +36,64 @@
     background: linear-gradient(45deg, rgba(66,135,245,0.7) 0%, rgba(96,154,243,0.7) 100%);
   }
 }
+
+@keyframes sunRay {
+  0%, 100% {
+    opacity: 0.4;
+    transform: rotate(var(--rotation)) translateY(-60px) scaleY(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: rotate(var(--rotation)) translateY(-60px) scaleY(1.2);
+  }
+}
+
+@keyframes snowfall {
+  0% {
+    transform: translateY(0) translateX(0) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.8;
+  }
+  90% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(500px) translateX(50px) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+@keyframes rainfall {
+  0% {
+    transform: translateY(0);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(500px);
+    opacity: 0;
+  }
+}
+
+@keyframes cloudFloat {
+  0%, 100% {
+    transform: translateX(-20%) translateY(0);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translateX(120%) translateY(-10px);
+    opacity: 0.5;
+  }
+}
+
+@keyframes fogDrift {
+  0%, 100% {
+    transform: translateX(-10%);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translateX(10%);
+    opacity: 0.5;
+  }
+}

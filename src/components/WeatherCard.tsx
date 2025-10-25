@@ -1,6 +1,7 @@
 import { Navigation } from 'lucide-react';
 import { getWeatherIcon, getWeatherColor } from '../utils/weatherIcons';
 import { CityWeatherDto } from '../services/api';
+import { WeatherAnimation } from './WeatherAnimations';
 
 interface WeatherCardProps {
   weather: CityWeatherDto;
@@ -15,8 +16,9 @@ export const WeatherCard = ({ weather, onClick }: WeatherCardProps) => {
 
   return (
     <div onClick={onClick} className="weather-card max-w-md w-full mx-auto bg-slate-800/50 rounded-xl overflow-hidden backdrop-blur-sm">
-      <div className={`${getWeatherColor(mainStatus)} p-6 relative`}>
-        <div className="flex justify-between items-start mb-4">
+      <div className={`${getWeatherColor(mainStatus)} p-6 relative overflow-hidden`}>
+        <WeatherAnimation status={mainStatus} />
+        <div className="flex justify-between items-start mb-4 relative z-10">
           <div>
             <h3 className="text-2xl font-bold text-white">{weather.name}</h3>
             <p className="text-sm text-white/80 mt-1">
@@ -38,7 +40,7 @@ export const WeatherCard = ({ weather, onClick }: WeatherCardProps) => {
           </div>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 relative z-10">
           <div className="text-white">
             {getWeatherIcon(mainStatus, 48)}
           </div>

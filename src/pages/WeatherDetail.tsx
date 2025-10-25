@@ -4,6 +4,7 @@ import { ArrowLeft, CloudSun, Sunrise } from 'lucide-react';
 import { CityWeatherDto, weatherApi, withAuth } from '../services/api';
 import { getWeatherIcon, getWeatherColor } from '../utils/weatherIcons';
 import { useAuth0 } from '@auth0/auth0-react';
+import { WeatherAnimation } from '../components/WeatherAnimations';
 
 export const WeatherDetail = () => {
   const { cityId } = useParams<{ cityId: string }>();
@@ -99,6 +100,7 @@ export const WeatherDetail = () => {
         <div className="max-w-4xl mx-auto">
           <div className="bg-slate-800 rounded-xl sm:rounded-2xl overflow-hidden shadow-2xl">
             <div className={`bg-gradient-to-br ${getWeatherColor(mainStatus)} p-8 sm:p-12 relative overflow-hidden`}>
+              <WeatherAnimation status={mainStatus} />
               <div className="absolute bottom-0 left-0 w-48 h-48 sm:w-64 sm:h-64 bg-black/10 rounded-full -mb-24 -ml-24 sm:-mb-32 sm:-ml-32"></div>
               <div className="absolute bottom-0 right-0 w-56 h-56 sm:w-72 sm:h-72 bg-black/10 rounded-full -mb-28 -mr-28 sm:-mb-36 sm:-mr-36"></div>
               <div className="absolute top-0 right-0 w-32 h-32 sm:w-40 sm:h-40 bg-white/5 rounded-full -mt-16 -mr-16 sm:-mt-20 sm:-mr-20"></div>

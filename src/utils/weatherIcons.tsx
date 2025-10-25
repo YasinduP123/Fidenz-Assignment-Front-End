@@ -38,7 +38,7 @@ export const getWeatherColor = (status: string): string => {
     return 'bg-gradient-to-r from-cyan-500 to-blue-500';
   }
   if (statusLower.includes('snow')) {
-    return 'bg-gradient-to-r from-indigo-400 to-violet-500';
+    return 'bg-gradient-to-r from-slate-300 to-cyan-400';
   }
   if (statusLower.includes('mist') || statusLower.includes('fog')) {
     return 'bg-gradient-to-r from-rose-400 to-rose-600';
