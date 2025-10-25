@@ -28,10 +28,7 @@ export const getWeatherIcon = (status: string, size: number = 48) => {
 export const getWeatherColor = (status: string): string => {
   const statusLower = status.toLowerCase();
 
-  if (statusLower.includes('clear') || statusLower.includes('sun')) {
-    return 'bg-gradient-to-r from-amber-500 to-orange-600';
-  }
-  if (statusLower.includes('clouds')) {
+  if (statusLower.includes('cloud')) {
     return 'bg-gradient-to-r from-blue-400 to-blue-600';
   }
   if (statusLower.includes('rain')) {
@@ -39,6 +36,9 @@ export const getWeatherColor = (status: string): string => {
   }
   if (statusLower.includes('snow')) {
     return 'bg-gradient-to-r from-slate-300 to-cyan-400';
+  }
+  if (statusLower.includes('clear') || statusLower.includes('sun')) {
+    return 'bg-gradient-to-r from-amber-500 to-orange-600';
   }
   if (statusLower.includes('mist') || statusLower.includes('fog')) {
     return 'bg-gradient-to-r from-rose-400 to-rose-600';
