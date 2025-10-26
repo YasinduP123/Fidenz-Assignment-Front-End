@@ -58,11 +58,13 @@ export const Dashboard = () => {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
         {/* Header */}
         <header className="text-center mb-8 sm:mb-12">
-          <div className="flex items-center justify-center gap-2 sm:gap-3 mb-6 sm:mb-8 relative">
-            <CloudSun size={36} className="text-blue-400 sm:w-12 sm:h-12" />
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white">Weather App</h1>
+          <div className="flex items-center justify-between mb-4 sm:mb-6">
+            <div className="flex items-center gap-2 sm:gap-3 flex-1 justify-center">
+              <CloudSun size={32} className="text-blue-400 sm:w-12 sm:h-12" />
+              <h1 className="text-2xl sm:text-4xl lg:text-5xl font-bold text-white">Weather App</h1>
+            </div>
 
-            <div className="absolute right-0 top-0 flex items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0 ml-2">
               {user && (
                 <div className="hidden sm:flex items-center gap-2 bg-slate-800/50 px-4 py-2 rounded-lg">
                   {user.picture && <img src={user.picture} alt={user.name} className="w-8 h-8 rounded-full" />}
@@ -71,7 +73,7 @@ export const Dashboard = () => {
               )}
               <button
                 onClick={handleLogout}
-                className="flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
+                className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-red-600 hover:bg-red-700 active:bg-red-800 text-white rounded-lg transition-colors"
                 title="Logout"
               >
                 <LogOut size={18} />
