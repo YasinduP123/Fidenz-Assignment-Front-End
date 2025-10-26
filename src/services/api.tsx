@@ -4,7 +4,10 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
-  headers: { 'Content-Type': 'application/json' },
+  headers: {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json'
+  },
 });
 
 export const setAuthToken = (token: string | null) => {
@@ -15,7 +18,12 @@ export const setAuthToken = (token: string | null) => {
   }
 };
 
-export interface ApiResponse<T> { success: boolean; message: string; data: T; statusCode: number; }
+export interface ApiResponse<T> {
+  success: boolean;
+  message: string;
+  data: T;
+  statusCode: number;
+}
 
 export interface CityWeatherDto {
   cityCode: string;
@@ -39,7 +47,7 @@ export interface CityWeatherDto {
   staticTemp: string;
 }
 
-export const withAuth = async <T>(
+export const withAuth = async <T extends unknown>(
   apiCall: () => Promise<T>,
   getToken: () => Promise<string>
 ): Promise<T> => {
@@ -50,25 +58,14 @@ export const withAuth = async <T>(
 
 export const weatherApi = {
   getAllCitiesWeather: async () => {
-    const response = await apiClient.get<ApiResponse<CityWeatherDto[]>>('/weather/cities/all-weather', {
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      }
-    });
+    const response = await apiClient.get<ApiResponse<CityWeatherDto[]>>('/weather/cities/all-weather');
     return response.data;
   },
 
   getWeatherByCity: async (cityId: string) => {
-    const response = await apiClient.get<ApiResponse<CityWeatherDto>>(`/weather/${cityId}`, {
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      }
-    });
+    const response = await apiClient.get<ApiResponse<CityWeatherDto>>(`/weather/${cityId}`);
     return response.data;
   }
 };
-
 
 export default apiClient;

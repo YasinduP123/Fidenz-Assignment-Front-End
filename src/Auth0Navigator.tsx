@@ -1,4 +1,3 @@
-import React from "react";
 import { Auth0Provider } from "@auth0/auth0-react";
 import { useNavigate } from "react-router-dom";
 
@@ -30,7 +29,7 @@ export const Auth0ProviderWithNavigate: React.FC<Auth0ProviderWithNavigateProps>
             }}
             onRedirectCallback={onRedirectCallback}
             useRefreshTokens={true}
-            cacheLocation="localstorage" // Required for session persistence
+            cacheLocation="localstorage"
             useRefreshTokensFallback={true}
         >
             {children}

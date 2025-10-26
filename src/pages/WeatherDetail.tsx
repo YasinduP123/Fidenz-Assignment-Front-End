@@ -74,7 +74,7 @@ export const WeatherDetail = () => {
     );
   }
 
-  const mainStatus = weather.staticStatus || 'Clear';
+  const mainStatus = weather.staticStatus;
   const description = weather.description || '';
   const temp = Math.round(weather.temp);
   const tempMin = weather.temp_min ? Math.round(weather.temp_min) : temp - 2;

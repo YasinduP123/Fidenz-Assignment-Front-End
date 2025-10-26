@@ -6,7 +6,7 @@ export const getWeatherIcon = (status: string, size: number = 48) => {
   if (statusLower.includes('rain') || statusLower.includes('drizzle')) {
     return <CloudRain size={size} className="weather-icon" />;
   }
-  if (statusLower.includes('cloud')) {
+  if (statusLower.includes('clouds')) {
     return <Cloud size={size} className="weather-icon" />;
   }
   if (statusLower.includes('clear') || statusLower.includes('sun')) {
@@ -28,7 +28,7 @@ export const getWeatherIcon = (status: string, size: number = 48) => {
 export const getWeatherColor = (status: string): string => {
   const statusLower = status.toLowerCase();
 
-  if (statusLower.includes('cloud')) {
+  if (statusLower.includes('clouds')) {
     return 'bg-gradient-to-r from-blue-400 to-blue-600';
   }
   if (statusLower.includes('rain')) {

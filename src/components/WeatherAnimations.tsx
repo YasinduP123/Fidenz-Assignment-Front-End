@@ -1,27 +1,34 @@
 interface WeatherAnimationProps {
-  status: string;
+  status?: string | null;
 }
 
 export const WeatherAnimation = ({ status }: WeatherAnimationProps) => {
-  const statusLower = status.toLowerCase();
+  // Safely handle status
+  const getWeatherType = (status: string | null | undefined) => {
+    if (!status) return 'clear';
+    return String(status).toLowerCase().trim();
+  };
 
-  if (statusLower.includes('snow')) {
+  const weatherType = getWeatherType(status);
+  console.log("WeathAnime status:", status);
+  
+  if (weatherType.includes('snow')) {
     return <SnowAnimation />;
   }
-  if (statusLower.includes('rain') || statusLower.includes('drizzle')) {
+  if (weatherType.includes('rain') || weatherType.includes('drizzle')) {
     return <RainAnimation />;
   }
-  if (statusLower.includes('cloud')) {
+  if (weatherType.includes('cloud')) {
     return <CloudAnimation />;
   }
-  if (statusLower.includes('clear') || statusLower.includes('sun')) {
+  if (weatherType.includes('clear') || weatherType.includes('sun')) {
     return <SunAnimation />;
   }
-  if (statusLower.includes('mist') || statusLower.includes('fog') || statusLower.includes('haze')) {
+  if (weatherType.includes('mist') || weatherType.includes('fog') || weatherType.includes('haze')) {
     return <FogAnimation />;
   }
 
-  return null;
+  return <CloudAnimation />;  // Default fallback
 };
 
 const SunAnimation = () => {
