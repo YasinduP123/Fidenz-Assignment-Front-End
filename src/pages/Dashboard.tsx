@@ -190,11 +190,11 @@ const DashboardWeatherCard = ({ weather, onClick }: DashboardWeatherCardProps) =
             })}
           </p>
 
-          <div className="flex items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className="text-white">{getWeatherIcon(mainStatus, 48)}</div>
-              <div>
-                <p className="text-white text-sm sm:text-base font-medium">
+          <div className="flex items-center justify-between gap-2 sm:gap-4">
+            <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
+              <div className="text-white flex-shrink-0">{getWeatherIcon(mainStatus, 40)}</div>
+              <div className="min-w-0">
+                <p className="text-white text-xs sm:text-base font-medium truncate">
                   {description
                     .split(' ')
                     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
@@ -203,9 +203,9 @@ const DashboardWeatherCard = ({ weather, onClick }: DashboardWeatherCardProps) =
               </div>
             </div>
 
-            <div className="text-right">
-              <div className="text-4xl sm:text-5xl font-bold text-white mb-2">{temp}°C</div>
-              <div className="text-white/90 text-xs sm:text-sm space-y-0.5">
+            <div className="text-right flex-shrink-0">
+              <div className="text-3xl sm:text-5xl font-bold text-white mb-1 sm:mb-2">{temp}°C</div>
+              <div className="text-white/90 text-[10px] sm:text-sm space-y-0.5">
                 <p>Temp Min: {tempMin}°c</p>
                 <p>Temp Max: {tempMax}°c</p>
               </div>
@@ -214,39 +214,40 @@ const DashboardWeatherCard = ({ weather, onClick }: DashboardWeatherCardProps) =
         </div>
       </div>
 
-      <div className="bg-slate-900/80 p-4 sm:p-6">
-        <div className="grid grid-cols-3 gap-4 text-white">
-          <div className="space-y-2 text-sm">
+      <div className="bg-slate-900/80 p-3 sm:p-6">
+        <div className="grid grid-cols-3 gap-2 sm:gap-4 text-white">
+          <div className="space-y-2 text-xs sm:text-sm">
             <div>
-              <p className="text-white/60 text-xs mb-0.5">Pressure:</p>
-              <p className="font-semibold">{pressure}hPa</p>
+              <p className="text-white/60 text-[10px] sm:text-xs mb-0.5">Pressure:</p>
+              <p className="font-semibold text-xs sm:text-sm">{pressure}hPa</p>
             </div>
             <div>
-              <p className="text-white/60 text-xs mb-0.5">Humidity:</p>
-              <p className="font-semibold">{humidity}%</p>
+              <p className="text-white/60 text-[10px] sm:text-xs mb-0.5">Humidity:</p>
+              <p className="font-semibold text-xs sm:text-sm">{humidity}%</p>
             </div>
             <div>
-              <p className="text-white/60 text-xs mb-0.5">Visibility:</p>
-              <p className="font-semibold">{visibility}km</p>
+              <p className="text-white/60 text-[10px] sm:text-xs mb-0.5">Visibility:</p>
+              <p className="font-semibold text-xs sm:text-sm">{visibility}km</p>
             </div>
           </div>
 
           <div className="flex flex-col items-center justify-center">
-            <svg className="w-7 h-7 sm:w-8 sm:h-8 mb-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ transform: `rotate(${windDegree}deg)` }}>
+            <svg className="w-6 h-6 sm:w-8 sm:h-8 mb-1 sm:mb-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ transform: `rotate(${windDegree}deg)` }}>
               <path d="M12 2l-4 8h8l-4-8z" fill="currentColor"/>
               <line x1="12" y1="10" x2="12" y2="22" />
             </svg>
-            <p className="font-semibold text-sm">{windSpeed.toFixed(1)}m/s {windDegree} Degree</p>
+            <p className="font-semibold text-[10px] sm:text-sm text-center leading-tight">{windSpeed.toFixed(1)}m/s</p>
+            <p className="font-semibold text-[10px] sm:text-sm text-center leading-tight">{windDegree} Degree</p>
           </div>
 
-          <div className="space-y-2 text-right text-sm">
+          <div className="space-y-2 text-right text-xs sm:text-sm">
             <div>
-              <p className="text-white/60 text-xs mb-0.5">Sunrise:</p>
-              <p className="font-semibold">{sunrise}</p>
+              <p className="text-white/60 text-[10px] sm:text-xs mb-0.5">Sunrise:</p>
+              <p className="font-semibold text-xs sm:text-sm">{sunrise}</p>
             </div>
             <div>
-              <p className="text-white/60 text-xs mb-0.5">Sunset:</p>
-              <p className="font-semibold">{sunset}</p>
+              <p className="text-white/60 text-[10px] sm:text-xs mb-0.5">Sunset:</p>
+              <p className="font-semibold text-xs sm:text-sm">{sunset}</p>
             </div>
           </div>
         </div>
