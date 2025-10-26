@@ -23,10 +23,12 @@ It provides a clean, responsive UI for viewing live weather data from the Spring
 frontend/
 ├── src/
 │   ├── components/
+│   ├── config/
 │   ├── pages/
-│   ├── hooks/
-│   └── services/
-│       └── weatherApi.ts
+│   ├── services/
+│   ├── utils/
+│   └── Main.tsx
+│   
 ├── public/
 ├── package.json
 ├── vite.config.ts
