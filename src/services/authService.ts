@@ -7,7 +7,6 @@ export const authService = {
         window.location.href = `${AUTH_BASE}/login?returnTo=${encodeURIComponent(target)}`;
     },
 
-    // Calls backend to clear HttpOnly cookie and redirects to login page
     async logout() {
         try {
             await fetch(`${AUTH_BASE}/logout`, {

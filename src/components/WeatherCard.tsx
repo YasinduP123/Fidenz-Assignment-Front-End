@@ -66,13 +66,13 @@ export const WeatherCard = ({ weather, onClick }: WeatherCardProps) => {
           </div>
 
           <div className="flex flex-col items-center justify-center border-x border-slate-700/30 px-4">
-            <Navigation 
-              className="text-white/80 mb-2" 
-              size={28} 
-              style={{ 
+            <Navigation
+              className="text-white/80 mb-2"
+              size={28}
+              style={{
                 transform: `rotate(${weather.wind_deg}deg)`,
                 transition: 'transform 0.3s ease-in-out'
-              }} 
+              }}
             />
             <p className="text-sm font-semibold text-white">{weather.wind_speed.toFixed(1)} m/s</p>
             <p className="text-xs text-white/60">{weather.wind_deg}°</p>

@@ -8,7 +8,6 @@ import { getWeatherIcon, getWeatherColor } from '../utils/weatherIcons';
 export const Dashboard = () => {
   const navigate = useNavigate();
   const { logout, user, getAccessTokenSilently } = useAuth0();
-
   const [searchQuery, setSearchQuery] = useState('');
   const [weatherData, setWeatherData] = useState<CityWeatherDto[]>([]);
   const [loading, setLoading] = useState(true);
@@ -19,10 +18,17 @@ export const Dashboard = () => {
   }, []);
 
   const fetchWeatherData = async () => {
+    const cachedData = localStorage.getItem('weatherDataFetched');
+    if (cachedData) {
+      const parsedData = JSON.parse(cachedData);
+      setWeatherData(parsedData);
+      setLoading(false);
+      console.log("LOCAL DATA", parsedData);
+      return;
+    }
     try {
       setLoading(true);
       setError(null);
-
       const response = await withAuth(
         () => weatherApi.getAllCitiesWeather(),
         async () => getAccessTokenSilently({ authorizationParams: { audience: import.meta.env.VITE_AUTH0_AUDIENCE } })
@@ -30,6 +36,7 @@ export const Dashboard = () => {
 
       if (response.success) {
         setWeatherData(response.data || []);
+        localStorage.setItem('weatherDataFetched', JSON.stringify(response.data));
         console.log('Weather data:', response.data);
       } else {
         setError(response.message);
@@ -40,6 +47,7 @@ export const Dashboard = () => {
       setLoading(false);
     }
   };
+
 
   const handleCardClick = (cityCode: string | number) => {
     navigate(`/weather/${cityCode}`);
@@ -235,7 +243,7 @@ const DashboardWeatherCard = ({ weather, onClick }: DashboardWeatherCardProps) =
 
           <div className="flex flex-col items-center justify-center">
             <svg className="w-6 h-6 sm:w-8 sm:h-8 mb-1 sm:mb-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ transform: `rotate(${windDegree}deg)` }}>
-              <path d="M12 2l-4 8h8l-4-8z" fill="currentColor"/>
+              <path d="M12 2l-4 8h8l-4-8z" fill="currentColor" />
               <line x1="12" y1="10" x2="12" y2="22" />
             </svg>
             <p className="font-semibold text-[10px] sm:text-sm text-center leading-tight">{windSpeed.toFixed(1)}m/s</p>

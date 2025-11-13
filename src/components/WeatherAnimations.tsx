@@ -11,7 +11,7 @@ export const WeatherAnimation = ({ status }: WeatherAnimationProps) => {
 
   const weatherType = getWeatherType(status);
   console.log("WeathAnime status:", status);
-  
+
   if (weatherType.includes('snow')) {
     return <SnowAnimation />;
   }

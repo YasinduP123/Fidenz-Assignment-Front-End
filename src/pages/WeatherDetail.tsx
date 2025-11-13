@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, CloudSun, Sunrise } from 'lucide-react';
+import { ArrowLeft, CloudSun } from 'lucide-react';
 import { CityWeatherDto, weatherApi, withAuth } from '../services/api';
 import { getWeatherIcon, getWeatherColor } from '../utils/weatherIcons';
 import { useAuth0 } from '@auth0/auth0-react';
 import { WeatherAnimation } from '../components/WeatherAnimations';
+import { getCityWithExpiry, setCityWithExpiry } from './CacheManager';
 
 export const WeatherDetail = () => {
   const { cityId } = useParams<{ cityId: string }>();
@@ -19,20 +20,31 @@ export const WeatherDetail = () => {
     const loadWeatherDetail = async () => {
       if (!cityId) return;
 
+      // Try to read from cache first
+      const cached = getCityWithExpiry(cityId);
+      if (cached) {
+        setWeather(cached);
+        setLoading(false);
+        return;
+      }
+
+      //Fetch from API if no cache or expired
       try {
         setLoading(true);
         setError(null);
-
         const response = await withAuth(
           () => weatherApi.getWeatherByCity(cityId),
           async () =>
             getAccessTokenSilently({
-              authorizationParams: { audience: import.meta.env.VITE_AUTH0_AUDIENCE }
+              authorizationParams: { audience: import.meta.env.VITE_AUTH0_AUDIENCE },
             })
         );
 
         if (response.success) {
           setWeather(response.data);
+          // Save to cache with expiry
+          console.log(response.data.expiry);
+          setCityWithExpiry(cityId, response.data, response.data.expiry);
         } else {
           setError(response.message);
         }
@@ -46,6 +58,7 @@ export const WeatherDetail = () => {
 
     loadWeatherDetail();
   }, [cityId, getAccessTokenSilently]);
+
 
   if (loading) {
     return (
@@ -171,7 +184,7 @@ export const WeatherDetail = () => {
 
                 <div className="flex flex-col items-center justify-center">
                   <svg className="w-8 h-8 sm:w-10 sm:h-10 mb-1 sm:mb-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ transform: `rotate(${windDegree}deg)` }}>
-                    <path d="M12 2l-4 8h8l-4-8z" fill="currentColor"/>
+                    <path d="M12 2l-4 8h8l-4-8z" fill="currentColor" />
                     <line x1="12" y1="10" x2="12" y2="22" />
                   </svg>
                   <p className="font-semibold text-xs sm:text-base text-center">{windSpeed.toFixed(1)}m/s</p>

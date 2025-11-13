@@ -45,6 +45,7 @@ export interface CityWeatherDto {
   cityName: string;
   staticStatus: string;
   staticTemp: string;
+  expiry: number;
 }
 
 export const withAuth = async <T extends unknown>(
@@ -59,6 +60,8 @@ export const withAuth = async <T extends unknown>(
 export const weatherApi = {
   getAllCitiesWeather: async () => {
     const response = await apiClient.get<ApiResponse<CityWeatherDto[]>>('/weather/cities/all-weather');
+    console.log("log res api ",response);
+    
     return response.data;
   },
 
