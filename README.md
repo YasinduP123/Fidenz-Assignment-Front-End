@@ -105,7 +105,7 @@ const response = await axios.get(`${VITE_API_BASE_URL}/2988507`, {
 
 **Yasidu Pathiraja**  
 Frontend Developer | React | Auth0 | REST APIs  
-🌐 [LinkedIn](https://www.linkedin.com) | [GitHub](https://github.com/yasidu-pathiraja)
+🌐 [LinkedIn](https://linkedin.com/in/yasindu-pathiraja-411751317) | [GitHub](https://github.com/YasinduP123)
 
 ---
 
